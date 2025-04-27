@@ -3,16 +3,13 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 
-// WŁĄCZAMY CORS
 app.use(cors());
 app.use(express.json());
 
-// BAZY DANYCH W PAMIĘCI
-let users = {};      // kod użytkownika -> znajomi
-let invites = {};    // kod użytkownika -> zaproszenia
-let messages = {};   // ID czatu -> lista wiadomości
+let users = {};
+let invites = {};
+let messages = {};
 
-// Wysyłanie zaproszenia
 app.post('/add-friend', (req, res) => {
   const { from, to } = req.body;
   if (!users[to]) {
@@ -25,7 +22,6 @@ app.post('/add-friend', (req, res) => {
   res.json({ success: true });
 });
 
-// Akceptowanie zaproszenia
 app.post('/accept-invite', (req, res) => {
   const { from, to } = req.body;
   if (!users[to]) users[to] = [];
@@ -39,7 +35,6 @@ app.post('/accept-invite', (req, res) => {
   res.json({ success: true });
 });
 
-// Odrzucenie zaproszenia
 app.post('/reject-invite', (req, res) => {
   const { from, to } = req.body;
   if (invites[to]) {
@@ -48,7 +43,6 @@ app.post('/reject-invite', (req, res) => {
   res.json({ success: true });
 });
 
-// Wysyłanie wiadomości
 app.post('/send-message', (req, res) => {
   const { chatId, from, message } = req.body;
   if (!messages[chatId]) messages[chatId] = [];
@@ -56,13 +50,11 @@ app.post('/send-message', (req, res) => {
   res.json({ success: true });
 });
 
-// Pobieranie wiadomości
 app.get('/get-messages', (req, res) => {
   const { chatId } = req.query;
   res.json(messages[chatId] || []);
 });
 
-// Pobieranie danych użytkownika
 app.get('/get-data', (req, res) => {
   const { code } = req.query;
   if (!users[code]) {
@@ -77,7 +69,6 @@ app.get('/get-data', (req, res) => {
   });
 });
 
-// Start serwera
 app.listen(port, () => {
   console.log(`✅ Server działa na porcie ${port}`);
 });
